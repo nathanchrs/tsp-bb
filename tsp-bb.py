@@ -50,7 +50,6 @@ if __name__ == "__main__":
 
   # Verify whether input size is valid
   input_rows, input_cols = input_graph.shape
-  print input_graph.shape
   if input_rows != input_cols:
     print 'Invalid input - adjacency matrix column count must be equal to its row count'
     exit(1)
@@ -60,12 +59,13 @@ if __name__ == "__main__":
   print 'Starting solver...'
   start_time = time.time()
 
-  shortest_cycle_distance, output_graph = bb.tsp_branch_and_bound(input_graph, bb.reduced_cost_matrix)
+  shortest_cycle_distance, solution_nodes = bb.tsp_branch_and_bound(input_graph, bb.reduced_cost_matrix)
 
   # End of solver code
   end_time = time.time()
   print ''
   print 'Shortest cycle distance:', shortest_cycle_distance
+  print 'Path: ', map(lambda x: x+1, solution_nodes)
   print 'Execution time:', end_time - start_time, 'seconds.'
 
   # Generate result graph
@@ -76,8 +76,9 @@ if __name__ == "__main__":
     for c in range(0, vertex_count):
       if input_graph[r, c] >= 0:
         edge_color = 'black'
-        if output_graph[r, c] >= 0:
-          edge_color = 'red'
+        for i in range(1, len(solution_nodes)):
+          if r == solution_nodes[i-1] and c == solution_nodes[i]:
+            edge_color = 'red'
         gv_output_graph.edge(str(r+1), str(c+1), label=str(input_graph[r, c]), color=edge_color)
 
   # Output and show result graph (file: result.png)
