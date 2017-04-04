@@ -64,11 +64,17 @@ def complete_tour_cost(current_lower_bound, input_graph, current_graph, steps):
 	# Calculate the lower bound of the cost of unvisited nodes - outgoing edges
 	for r in range(0, row):
 		min_distance = -1
+		max_opposite_distance = -1
 		min_c = None
 		for c in range(0, col):
-			if min_distance < 0 or (current_graph[r, c] >= 0 and current_graph[r, c] < min_distance):
-				min_distance = current_graph[r, c]
-				min_c = c
+			if min_distance < 0 or (current_graph[r, c] >= 0 and current_graph[r, c] <= min_distance):
+				if min_distance == current_graph[r, c]:
+					if current_graph[c, r] == -1 or current_graph[c, r] > max_opposite_distance:
+						max_opposite_distance = current_graph[c, r]
+						min_c = c
+				else:
+					min_distance = current_graph[r, c]
+					min_c = c
 		if min_distance >= 0:
 			cost = cost + min_distance
 			minimum_outgoing_edges.append((r, min_c))
@@ -102,9 +108,6 @@ def tsp_branch_and_bound(input_graph, bounding_function):
 
 	while not pq.empty():
 		current_lower_bound, current_insert_index, current_graph, steps = pq.get()
-
-		# DEBUG
-		print current_lower_bound, steps
 
 		# Stop if the current lower bound is greater than the solution's cycle distance
 		if best_solution[0] is not None and current_lower_bound >= best_solution[0]:
