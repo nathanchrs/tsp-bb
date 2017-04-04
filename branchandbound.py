@@ -96,18 +96,20 @@ def complete_tour_cost(current_lower_bound, input_graph, current_graph, steps):
 # Input:
 # - input_graph: n x n adjacency matrix (NumPy matrix), with infinite distances represented by negative numbers.
 # - bounding_function: reduced_cost_matrix or complete_tour_cost
-# Returns a tuple of (shortest cycle distance, nodes visited in order)
+# Returns a tuple of (shortest cycle distance, nodes visited in order, nodes generated)
 def tsp_branch_and_bound(input_graph, bounding_function):
 
 	graph_n = input_graph.shape[0]
 	pq = Queue.PriorityQueue()
-	insert_index = 0 # Unique insertion order index for each priority queue item, needed for proper sorting in case two items' lower bounds are equal
 	start_lower_bound, start_graph = bounding_function(0, input_graph, input_graph, [0])
 	pq.put((start_lower_bound, 0, start_graph, [0]))
 	best_solution = (None, [])
+	nodes_visited = 0
+	nodes_generated = 1 # Unique insertion order index for each priority queue item, needed for proper sorting in case two items' lower bounds are equal
 
 	while not pq.empty():
-		current_lower_bound, current_insert_index, current_graph, steps = pq.get()
+		current_lower_bound, current_nodes_generated, current_graph, steps = pq.get()
+		nodes_visited = nodes_visited + 1
 
 		# Stop if the current lower bound is greater than the solution's cycle distance
 		if best_solution[0] is not None and current_lower_bound >= best_solution[0]:
@@ -132,7 +134,8 @@ def tsp_branch_and_bound(input_graph, bounding_function):
 				next_steps = copy.deepcopy(steps)
 				next_steps.append(next_node)
 				next_lower_bound, next_graph = bounding_function(current_lower_bound, input_graph, next_graph, next_steps)
-				insert_index = insert_index + 1
-				pq.put((next_lower_bound, insert_index, next_graph, next_steps))
+				nodes_generated = nodes_generated + 1
+				pq.put((next_lower_bound, nodes_generated, next_graph, next_steps))
 
-	return best_solution
+	bs_cycle_distance, bs_steps = best_solution
+	return (bs_cycle_distance, bs_steps, nodes_generated, nodes_visited)

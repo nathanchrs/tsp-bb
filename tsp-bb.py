@@ -59,13 +59,15 @@ if __name__ == "__main__":
   print 'Starting solver...'
   start_time = time.time()
 
-  shortest_cycle_distance, solution_nodes = bb.tsp_branch_and_bound(input_graph, bb.complete_tour_cost)
+  shortest_cycle_distance, solution_nodes, nodes_generated, nodes_visited = bb.tsp_branch_and_bound(input_graph, bb.reduced_cost_matrix)
 
   # End of solver code
   end_time = time.time()
   print ''
   print 'Shortest cycle distance:', shortest_cycle_distance
-  print 'Path: ', map(lambda x: x+1, solution_nodes)
+  print 'Path:', map(lambda x: x+1, solution_nodes)
+  print 'Nodes generated:', nodes_generated
+  print 'Nodes visited:', nodes_visited
   print 'Execution time:', end_time - start_time, 'seconds.'
 
   # Generate result graph
