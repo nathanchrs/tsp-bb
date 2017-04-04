@@ -59,7 +59,7 @@ if __name__ == "__main__":
   print 'Starting solver...'
   start_time = time.time()
 
-  shortest_cycle_distance, solution_nodes = bb.tsp_branch_and_bound(input_graph, bb.reduced_cost_matrix)
+  shortest_cycle_distance, solution_nodes = bb.tsp_branch_and_bound(input_graph, bb.complete_tour_cost)
 
   # End of solver code
   end_time = time.time()
@@ -69,7 +69,7 @@ if __name__ == "__main__":
   print 'Execution time:', end_time - start_time, 'seconds.'
 
   # Generate result graph
-  gv_output_graph = Digraph('Result graph', format='png', filename='result', engine='sfdp')
+  gv_output_graph = Digraph('Result graph', format='png', filename='result', engine='circo')
   for v in range(0, vertex_count):
     gv_output_graph.node(str(v+1), shape='circle')
   for r in range(0, vertex_count):
