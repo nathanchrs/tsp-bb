@@ -130,7 +130,7 @@ def tsp_branch_and_bound(input_graph, bounding_function):
 				for i in range(0, graph_n):
 					next_graph[steps[-1], i] = -1
 					next_graph[i, next_node] = -1
-				next_graph[next_node, steps[-1]] = -1
+				next_graph[next_node, 0] = -1
 				next_steps = copy.deepcopy(steps)
 				next_steps.append(next_node)
 				next_lower_bound, next_graph = bounding_function(current_lower_bound, input_graph, next_graph, next_steps)

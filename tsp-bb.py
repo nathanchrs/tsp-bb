@@ -33,16 +33,25 @@ if __name__ == "__main__":
   print ''
 
   # Process command-line arguments to get the input file
-  if len(sys.argv) > 2 or len(sys.argv) == 2 and (sys.argv[1] == '--help' or sys.argv[1] == '-h' or sys.argv[1] == '/?'):
-    print 'Usage: tsp-bb <input filename>'
+  if len(sys.argv) > 3 or len(sys.argv) == 2 and (sys.argv[1] == '--help' or sys.argv[1] == '-h' or sys.argv[1] == '/?'):
+    print 'Usage: tsp-bb <input filename> [--reduced-cost-matrix|--complete-tour-cost]'
     exit(1)
+  input_from_stdin = False
   if len(sys.argv) < 2 or sys.argv[1] == '-':
     fin = sys.stdin
+    input_from_stdin = True
   else:
     fin = open(sys.argv[1], 'r')
+  bounding_function = bb.reduced_cost_matrix
+  if len(sys.argv) >= 3:
+    if sys.argv[2] == '--complete-tour-cost':
+      bounding_function = bb.complete_tour_cost
 
   # Read input from file or standard input
-  print 'Reading input graph...'
+  if input_from_stdin:
+    print 'Input n x n graph adjacency matrix (infinity: -1):'
+  else:
+    print 'Reading input graph from file...'
   input_graph_raw = []
   for line in fin:
     input_graph_raw.append([int(inp) for inp in line.split()])
@@ -56,10 +65,14 @@ if __name__ == "__main__":
   vertex_count = input_rows
 
   # Start of solver code
+  if bounding_function == bb.reduced_cost_matrix:
+    print 'Using reduced cost matrix bounding function:'
+  elif bounding_function == bb.complete_tour_cost:
+    print 'Using complete tour cost bounding function'
   print 'Starting solver...'
   start_time = time.time()
 
-  shortest_cycle_distance, solution_nodes, nodes_generated, nodes_visited = bb.tsp_branch_and_bound(input_graph, bb.reduced_cost_matrix)
+  shortest_cycle_distance, solution_nodes, nodes_generated, nodes_visited = bb.tsp_branch_and_bound(input_graph, bounding_function)
 
   # End of solver code
   end_time = time.time()
