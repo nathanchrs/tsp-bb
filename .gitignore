@@ -2,6 +2,11 @@
 result
 result.png
 
+# Report
+*.pdf
+*.log
+*.aux
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

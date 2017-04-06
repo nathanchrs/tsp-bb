@@ -1,13 +1,12 @@
 #!/usr/bin/env/python
 
-# Travelling Salesman Problem Solver
+# Travelling Salesperson Problem Solver
 # 13515001 (K01) - Jonathan Christopher
 # IF2211 Strategi Algoritma
 # Algorithm: branch and bound
 #  
 # Input file format:
-# <number of vertices>
-# <integer adjancency matrix of graph, negative numbers denotes infinite distance>
+# <integer adjancency matrix of graph, negative numbers denote infinite distance>
 # 
 # Starts from the first vertex.
 # Python 2.7 only.
